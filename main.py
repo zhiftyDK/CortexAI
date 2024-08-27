@@ -1,20 +1,43 @@
+import os
+import base64
+import uuid
+import logging
+from flask import Flask, send_file, request
+from flask_cors import CORS
 import modules.llm as llm
-import modules.texttospeech as tts
-import modules.speechtotext as stt
+from modules.texttospeech import texttospeech
+from modules.speechtotext import speechtotext
 
-print("Ready!")
-while True:    
-    wakeword = stt.recognize().lower()
-    if "hey cortex" in wakeword:
-        while True:
-            print("Recognizing!")
-            question = stt.recognize()
-            if len(question) == 0:
-                continue
-            print("You:", question)
-            response = llm.generate(question)
-            print("Bot:", response["message"]["content"])
-            tts.say(response["message"]["content"])
-            if "goodbye" in question or "good bye" in question:
-                print("Ready!")
-                break
+app = Flask(__name__)
+CORS(app)
+
+@app.route("/texttospeech", methods=["POST"])
+def tts():
+    data = request.get_json()
+    filepath = texttospeech(data["text"])
+
+    return send_file(filepath, mimetype="audio/wav")
+
+@app.route("/speechtotext", methods=["POST"])
+def stt():
+    data = request.get_json()
+    decoded = base64.b64decode(data["audio_data"])
+
+    filepath = f"./{uuid.uuid4()}.wav"
+
+    with open(filepath, "wb") as f:
+        f.write(decoded)
+        f.close()
+    
+    result = speechtotext(filepath)
+    os.remove(filepath)
+
+    return {"transcription": result}
+
+@app.route("/chat", methods=["POST"])
+def chat():
+    data = request.get_json()
+    response = llm.generate(data["question"])
+    return {"response": response}
+
+app.run()

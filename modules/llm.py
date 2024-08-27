@@ -6,10 +6,10 @@ SYSTEM Your name is Cortex. You should always give reasonably short answers.
 """
 ollama.create(model="cortex", modelfile=modelfile)
 
-def generate(user_input):
+def generate(question):
     message = {
             "role": "user",
-            "content": user_input,
+            "content": question,
     }
     response = ollama.chat(model="cortex", messages=[message])
-    return response
+    return response["message"]["content"]

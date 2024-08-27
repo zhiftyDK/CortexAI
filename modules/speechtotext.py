@@ -1,30 +1,30 @@
-import queue
+import wave
 import sys
-import sounddevice as sd
 import json
+import numpy as np
+from scipy.io import wavfile
+from vosk import Model, KaldiRecognizer, SetLogLevel
 
-from vosk import Model, KaldiRecognizer
-
-q = queue.Queue()
-
-def callback(indata, frames, time, status):
-    """This is called (from a separate thread) for each audio block."""
-    if status:
-        print(status, file=sys.stderr)
-    q.put(bytes(indata))
-
-device = sd.default.device
-device_info = sd.query_devices(device, "input")
-samplerate = int(device_info["default_samplerate"])
-    
+SetLogLevel(-1)
 model = Model("./models/vosk-model-small-en-us-0.15")
 
-def recognize():
-    with sd.RawInputStream(samplerate=samplerate, blocksize = 8000, device=device, dtype="int16", channels=1, callback=callback):
-        rec = KaldiRecognizer(model, samplerate)
-        transcribing = True
-        while transcribing:
-            data = q.get()
-            if rec.AcceptWaveform(data):
-                transcribing = False
-                return json.loads(rec.Result())["text"]
+def speechtotext(filepath):
+    samplerate, data = wavfile.read(filepath)
+    new_data = data * 32767
+    wavfile.write(filepath, samplerate, new_data.astype(np.int16))
+    wf = wave.open(filepath, "rb")
+    if wf.getnchannels() != 1 or wf.getsampwidth() != 2 or wf.getcomptype() != "NONE":
+        print("Audio file must be WAV format mono PCM.")
+        sys.exit(1)
+
+    rec = KaldiRecognizer(model, wf.getframerate())
+    rec.SetWords(True)
+    rec.SetPartialWords(True)
+
+    while True:
+        data = wf.readframes(4000)
+        if len(data) == 0:
+            break
+        rec.AcceptWaveform(data)
+
+    return json.loads(rec.FinalResult())["text"]
