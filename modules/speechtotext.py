@@ -16,7 +16,7 @@ def speechtotext(filepath):
     if wf.getnchannels() != 1 or wf.getsampwidth() != 2 or wf.getcomptype() != "NONE":
         print("Audio file must be WAV format mono PCM.")
         sys.exit(1)
-
+    
     rec = KaldiRecognizer(model, wf.getframerate())
     rec.SetWords(True)
     rec.SetPartialWords(True)
@@ -27,4 +27,4 @@ def speechtotext(filepath):
             break
         rec.AcceptWaveform(data)
 
-    return json.loads(rec.FinalResult())["text"]
+    return json.loads(rec.FinalResult())

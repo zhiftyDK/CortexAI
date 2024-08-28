@@ -11,7 +11,7 @@ function speechtotext(base64WavBuffer) {
         })
         .then(response => response.json())
         .then(data => {
-            resolve(data.transcription);
+            resolve(data.text);
         });
     });
 }
@@ -48,7 +48,7 @@ function chat(question) {
         })
         .then(response => response.json())
         .then(data => {
-            resolve(data.response);
+            resolve(data.message.content);
         });
     });
 }

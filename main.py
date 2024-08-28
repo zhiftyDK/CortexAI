@@ -32,12 +32,12 @@ def stt():
     result = speechtotext(filepath)
     os.remove(filepath)
 
-    return {"transcription": result}
+    return result
 
 @app.route("/chat", methods=["POST"])
 def chat():
     data = request.get_json()
     response = llm.generate(data["question"])
-    return {"response": response}
+    return response
 
 app.run()

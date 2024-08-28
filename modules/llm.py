@@ -12,4 +12,4 @@ def generate(question):
             "content": question,
     }
     response = ollama.chat(model="cortex", messages=[message])
-    return response["message"]["content"]
+    return response
