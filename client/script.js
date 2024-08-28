@@ -16,7 +16,7 @@ function speechtotext(base64WavBuffer) {
     });
 }
 
-async function texttospeech(text) {
+function texttospeech(text) {
     return new Promise((resolve, reject) => {
         fetch("http://127.0.0.1:5000/texttospeech", {
             method: "POST",
