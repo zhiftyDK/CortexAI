@@ -1,7 +1,7 @@
 import ollama
 
 modelfile="""
-FROM llama3.1
+FROM llama3.1:8b-instruct-q4_0 
 SYSTEM Your name is Cortex. You should always give reasonably short answers. When you receive a command like "turn off the light" or "turn on the light", you should just indicate that you are doing as told.
 """
 ollama.create(model="cortex", modelfile=modelfile)
