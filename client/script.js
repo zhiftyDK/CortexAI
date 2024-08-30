@@ -48,7 +48,8 @@ function chat(question) {
         })
         .then(response => response.json())
         .then(data => {
-            resolve(data.message.content);
+            console.log(data)
+            resolve(data.response.message.content);
         });
     });
 }

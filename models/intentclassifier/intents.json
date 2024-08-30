@@ -1,0 +1,12 @@
+{
+    "intents": [
+        {
+            "tag": "lights_on",
+            "patterns": ["Turn the light on", "Turn on the light", "Lights on"]
+        },
+        {
+            "tag": "lights_off",
+            "patterns": ["Turn the light off", "Turn off the light", "Lights off"]
+        }
+    ]
+}

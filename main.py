@@ -1,15 +1,20 @@
 import os
 import base64
 import uuid
-import logging
 from flask import Flask, send_file, request
 from flask_cors import CORS
 import modules.llm as llm
 from modules.texttospeech import texttospeech
 from modules.speechtotext import speechtotext
+from modules.intentclassifier import IntentClassifier
+from modules.trigger import handleTrigger
 
 app = Flask(__name__)
 CORS(app)
+
+model_dir_path = "./models/intentclassifier/"
+IC = IntentClassifier(model_dir_path)
+IC.load_model()
 
 @app.route("/texttospeech", methods=["POST"])
 def tts():
@@ -38,6 +43,28 @@ def stt():
 def chat():
     data = request.get_json()
     response = llm.generate(data["question"])
-    return response
+    prediction = IC.predict(data["question"])
+
+    handleTrigger(prediction, 0.75)
+
+    return {
+        "response": response,
+        "triggers": prediction
+    }
+
+@app.route("/fit_model", methods=["GET"])
+def fit_model():
+    try:
+        IC.fit_model()
+        IC.load_model()
+        return {
+            "error": False,
+            "message": "Model has been fit!"
+        }
+    except:
+        return {
+            "error": True,
+            "message": "An unknown error has occured while fitting the model!"
+        }
 
 app.run()
