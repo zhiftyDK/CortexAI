@@ -7,6 +7,14 @@
         {
             "tag": "lights_off",
             "patterns": ["Turn the light off", "Turn off the light", "Lights off"]
+        },
+        {
+            "tag": "fan_on",
+            "patterns": ["Turn the fan on", "Turn on the fan", "Fan on"]
+        },
+        {
+            "tag": "fan_off",
+            "patterns": ["Turn the fan off", "Turn off the fan", "Fan off"]
         }
     ]
 }

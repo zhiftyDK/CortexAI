@@ -1,10 +1,18 @@
+import modules.phillipshue as ph
+
 def lights_on():
-    print("Turning lights on!")
+    ph.light(on=True)
 
 def lights_off():
-    print("Turning lights off!")
+    ph.light(on=False)
 
-trigger_functions = [lights_on, lights_off]
+def fan_on():
+    ph.fan(on=True)
+
+def fan_off():
+    ph.fan(on=False)
+
+trigger_functions = [lights_on, lights_off, fan_on, fan_off]
 def handleTrigger(prediction, confidence_threshold):
     if float(prediction["probability"]) > confidence_threshold:
         for function in trigger_functions:
