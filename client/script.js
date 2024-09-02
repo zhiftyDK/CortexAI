@@ -49,7 +49,7 @@ function chat(question) {
         .then(response => response.json())
         .then(data => {
             console.log(data)
-            resolve(data.response.message.content);
+            resolve(data.response);
         });
     });
 }
