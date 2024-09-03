@@ -4,23 +4,23 @@ import uuid
 import sys
 from flask import Flask, send_file, request
 from flask_cors import CORS
+from intentclassification import IntentClassifier, handleTriggers
 import modules.llm as llm
 from modules.texttospeech import texttospeech
 from modules.speechtotext import speechtotext
-from modules.intentclassifier import IntentClassifier
-from modules.trigger import handleTrigger
+from modules.trigger import trigger_functions
 
 app = Flask(__name__)
 CORS(app)
 
-model_dir_path = "./models/intentclassifier/"
-IC = IntentClassifier(model_dir_path)
-IC.load_model()
+IC = IntentClassifier(intents_path="./models/intentclassifier/intents.json", output_path="./models/intentclassifier/")
 
 if "--fitmodel" in sys.argv:
     IC.fit_model()
     IC.save_model()
     sys.exit()
+
+IC.load_model()
 
 test_question = "What is your name?"
 llm.generate(test_question)
@@ -55,11 +55,14 @@ def chat():
     response = llm.generate(data["question"])
     prediction = IC.predict(data["question"])
 
-    handleTrigger(prediction, 0.75)
+    returns = handleTriggers(prediction, 0.75, trigger_functions)
 
     return {
         "response": response,
-        "triggers": prediction
+        "triggers": {
+            "prediction": prediction,
+            "returns": returns
+        }
     }
 
 app.run()

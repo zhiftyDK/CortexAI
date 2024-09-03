@@ -13,8 +13,3 @@ def fan_off():
     ph.fan(on=False)
 
 trigger_functions = [lights_on, lights_off, fan_on, fan_off]
-def handleTrigger(prediction, confidence_threshold):
-    if float(prediction["probability"]) > confidence_threshold:
-        for function in trigger_functions:
-            if function.__name__ == prediction["intent"]:
-                function()
