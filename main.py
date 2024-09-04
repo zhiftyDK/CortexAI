@@ -52,7 +52,7 @@ def stt():
 @app.route("/chat", methods=["POST"])
 def chat():
     data = request.get_json()
-    response = llm.generate(data["question"])
+    response = llm.ask_question_memory(data["question"])
     prediction = IC.predict(data["question"])
 
     returns = handleTriggers(prediction, 0.75, trigger_functions)

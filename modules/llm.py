@@ -1,26 +1,18 @@
 import ollama
 
-conversation_history = []
+system_message = """
+Your name is Cortex.
+You should always give reasonably short answers.
+When you receive a command like "turn off the light" or "turn on the light", you should just indicate that you are doing as told.
+"""
 
-def generate(question):
-    try:
-        system_message = """
-        Your name is Cortex.
-        You should always give reasonably short answers.
-        When you receive a command like "turn off the light" or "turn on the light", you should just indicate that you are doing as told.
-        """
+conversation_history = [{"role": "system", "content": system_message}]
 
-        message = {
-            "role": "user",
-            "content": question,
-        }
+def ask_question_memory(question):
+    try: 
+        conversation_history.append({"role": "user", "content": question})
 
-        conversation_history.append(message)
-
-        response = ollama.chat(model="llama3.1:8b-instruct-q4_0", messages=[
-            {"role": "system", "content": system_message},
-            *conversation_history
-        ])
+        response = ollama.chat(model="llama3.1:8b-instruct-q4_0", messages=conversation_history)
 
         conversation_history.append({"role": "assistant", "content": response["message"]["content"]})
 
