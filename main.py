@@ -23,7 +23,7 @@ if "--fitmodel" in sys.argv:
 IC.load_model()
 
 test_question = "What is your name?"
-llm.generate(test_question)
+llm.ask_question_memory(test_question)
 IC.predict(test_question)
 
 @app.route("/texttospeech", methods=["POST"])
