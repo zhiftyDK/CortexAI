@@ -15,6 +15,10 @@
         {
             "tag": "fan_off",
             "patterns": ["Turn the fan off", "Turn off the fan", "Fan off"]
+        },
+        {
+            "tag": "search_google",
+            "patterns": ["Search google", "Search the web", "Do a websearch"]
         }
     ]
 }

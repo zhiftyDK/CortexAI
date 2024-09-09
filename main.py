@@ -16,7 +16,7 @@ CORS(app)
 IC = IntentClassifier(intents_path="./models/intentclassifier/intents.json", output_path="./models/intentclassifier/")
 
 if "--fitmodel" in sys.argv:
-    IC.fit_model()
+    IC.fit_model(epochs=50)
     IC.save_model()
     sys.exit()
 
@@ -52,10 +52,14 @@ def stt():
 @app.route("/chat", methods=["POST"])
 def chat():
     data = request.get_json()
-    response = llm.ask_question_memory(data["question"])
     prediction = IC.predict(data["question"])
 
-    returns = handleTriggers(prediction, 0.75, trigger_functions)
+    if prediction["intent"] == "search_google" and float(prediction["probability"]) > 0.75:
+        returns = None
+        response = llm.ask_question_google(data["question"])
+    else:
+        returns = handleTriggers(prediction, 0.75, trigger_functions)
+        response = llm.ask_question_memory(data["question"])
 
     return {
         "response": response,
