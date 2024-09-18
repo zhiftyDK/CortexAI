@@ -1,26 +1,35 @@
-{
-    "tools": [
-        {
-            "type": "function",
-            "function": {
-                "name": "set_light_state",
-                "description": "Set the current state and brightness of lights",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                    "brightness": {
-                        "type": "integer",
-                        "description": "The brightness to set the lights to, e.g. 30, 50 or 80"
-                    },
-                    "state": {
-                        "type": "string",
-                        "description": "The state to set the lights to, either 'on' or 'off'",
-                        "enum": ["on", "off"]
-                    }
-                    },
-                    "required": ["state"]
+[
+    {
+        "name": "set_light_state",
+        "description": "Set the current state and brightness of lights",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "brightness": {
+                    "type": "integer",
+                    "description": "The brightness to set the lights to (0-100)."
+                },
+                "state": {
+                    "type": "string",
+                    "description": "The state to set the lights to, either 'on' or 'off'. If state is on and brightness is not specified set brightness to 100.",
+                    "enum": ["on", "off"]
                 }
-            }
+            },
+            "required": ["state", "brightness"]
         }
-    ]
-}
+    },
+    {
+        "name": "get_current_weather",
+        "description": "Get the current weather in a given location",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "location": {
+                    "type": "string",
+                    "description": "The city and country code, e.g. San Francisco, CA"
+                }
+            },
+            "required": ["location"]
+        }
+    }
+]
