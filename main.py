@@ -58,7 +58,7 @@ def chat():
         returns = None
         response = llm.ask_question_google(data["question"])
     else:
-        returns = handleTriggers(prediction, 0.75, trigger_functions)
+        returns = handleTriggers(prediction, 0.75, trigger_functions, ())
         response = llm.ask_question_memory(data["question"])
 
     return {
