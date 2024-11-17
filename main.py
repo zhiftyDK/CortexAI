@@ -54,12 +54,17 @@ def chat():
     data = request.get_json()
     prediction = IC.predict(data["question"])
 
-    if prediction["intent"] == "search_google" and float(prediction["probability"]) > 0.75:
+    if prediction["intent"] == "search_google" and float(prediction["probability"]) > 0.90:
         returns = None
         response = llm.ask_question_google(data["question"])
     else:
-        returns = handleTriggers(prediction, 0.75, trigger_functions, ())
-        response = llm.ask_question_memory(data["question"])
+        returns = handleTriggers(prediction, 0.90, trigger_functions, ())
+        if returns:
+            prompt = f"Using this information: {returns}. Respond to the prompt: {data['question']}"
+            print(prompt)
+            response = llm.ask_question_memory(prompt)
+        else:
+            response = llm.ask_question_memory(data["question"])
 
     return {
         "response": response,

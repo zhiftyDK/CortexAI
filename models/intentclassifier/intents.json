@@ -19,6 +19,10 @@
         {
             "tag": "search_google",
             "patterns": ["Search google", "Search the web", "Do a websearch"]
+        },
+        {
+            "tag": "weather",
+            "patterns": ["What is the weather like", "Tell me about the weather"]
         }
     ]
 }
