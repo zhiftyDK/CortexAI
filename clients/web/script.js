@@ -76,8 +76,9 @@ async function startVAD() {
             outputdiv.innerHTML += `Bot: ${response}</br>`
             const audioFileObjectURL = await texttospeech(response);
             const audioFile = new Audio(audioFileObjectURL);
-            audioFile.play();
-            audioFile.addEventListener("ended", () => {
+            const viz = new Visualizer(audioFile, 100, 5, 100, "#000000");
+            viz.play();
+            viz.addEventListener("ended", () => {
                 myvad.start();
                 recordingSymbol.innerText = "🔴";
             });
