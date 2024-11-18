@@ -81,8 +81,14 @@ def chat():
         response = llm.ask_question_google(data["question"])
     else:
         returns = handleTriggers(prediction, 0.90, trigger_functions, ())
-        prompt = f"Prompt: {data['question']}. System information: {returns}"
-        response = llm.ask_question_memory(prompt)
+        if returns:
+            prompt = f"Using this information: {returns}. Respond to the prompt: {data['question']}"
+            response = llm.ask_question_memory(prompt)
+        elif float(prediction["probability"]) > 0.90:
+            prompt = f"Prompt: {data['question']}. System information: The {prediction['intent']} command execution was successful."
+            response = llm.ask_question_memory(prompt)
+        else:
+            response = llm.ask_question_memory(data["question"])
 
     return {
         "response": response,
