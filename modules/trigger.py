@@ -3,15 +3,19 @@ import requests
 
 def lights_on(args):
     ph.light(on=True)
+    return "Lights have been turned on."
 
 def lights_off(args):
     ph.light(on=False)
+    return "Lights have been turned off."
 
 def fan_on(args):
     ph.fan(on=True)
+    return "Fan has been turned on."
 
 def fan_off(args):
     ph.fan(on=False)
+    return "Fan has been turned off."
 
 def weather(args):
     city = "Silkeborg"

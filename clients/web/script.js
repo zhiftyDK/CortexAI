@@ -1,4 +1,4 @@
-const wakeworddetection = false;
+const wakeworddetection = true;
 const customwakeword = "cortex";
 
 function wakeword(base64WavBuffer, wakeword) {
@@ -89,24 +89,21 @@ async function startVAD() {
         },
         onSpeechEnd: async (audio) => {
             myvad.pause();
-            recordingSymbol.innerText = "⚫";
-            const outputdiv = document.getElementById("outputdiv")
             const wavBuffer = vad.utils.encodeWAV(audio);
             const base64WavBuffer = vad.utils.arrayBufferToBase64(wavBuffer);
             if(wakeworddetected || !wakeworddetection) {
+                recordingSymbol.innerText = "⚫";
                 const transcription = await speechtotext(base64WavBuffer);
                 console.log("You:", transcription);
-                outputdiv.innerHTML += `You: ${transcription}</br>`
                 const response = await chat(transcription);
                 console.log("Bot:", response);
-                outputdiv.innerHTML += `Bot: ${response}</br>`
                 const audioFileObjectURL = await texttospeech(response);
                 audioElement.src = audioFileObjectURL;
                 viz.play();
                 viz.addEventListener("ended", () => {
                     wakeworddetected = false;
                     myvad.start();
-                    recordingSymbol.innerText = "🔴";
+                    recordingSymbol.innerText = "🟡";
                 });
             }
             if(!wakeworddetected && wakeworddetection) {
@@ -114,6 +111,7 @@ async function startVAD() {
                     console.log("Wakeword detected...");
                     wakeworddetected = true;
                     myvad.start();
+                    recordingSymbol.innerText = "🔴";
                 } else {
                     console.log("Wakeword not detected...");
                     myvad.start();
@@ -122,10 +120,7 @@ async function startVAD() {
         }
     });
     myvad.start();
-    recordingSymbol.innerText = "🔴";
 }
 
-function pauseVAD() {
-    myvad.pause();
-    recordingSymbol.innerText = "⚫";
-}
+startVAD();
+recordingSymbol.innerText = "🟡";
