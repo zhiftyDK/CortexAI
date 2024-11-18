@@ -49,6 +49,28 @@ def stt():
 
     return result
 
+@app.route("/wakeword", methods=["POST"])
+def wakeword():
+    data = request.get_json()
+    decoded = base64.b64decode(data["audio_data"])
+    wakeword = data["wakeword"]
+
+    filepath = f"./{uuid.uuid4()}.wav"
+
+    with open(filepath, "wb") as f:
+        f.write(decoded)
+        f.close()
+    
+    result = speechtotext(filepath)
+    os.remove(filepath)
+
+    detected = True if wakeword.lower() in result["text"].lower() else False
+    
+    return {
+        "wakeword": wakeword,
+        "detected": detected
+    }
+
 @app.route("/chat", methods=["POST"])
 def chat():
     data = request.get_json()

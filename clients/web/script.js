@@ -1,3 +1,25 @@
+const wakeworddetection = false;
+const customwakeword = "cortex";
+
+function wakeword(base64WavBuffer, wakeword) {
+    return new Promise((resolve, reject) => {
+        fetch("http://127.0.0.1:5000/wakeword", {
+            method: "POST",
+            body: JSON.stringify({
+                audio_data: base64WavBuffer,
+                wakeword: wakeword
+            }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            resolve(data.detected);
+        });
+    });
+}
+
 function speechtotext(base64WavBuffer) {
     return new Promise((resolve, reject) => {
         fetch("http://127.0.0.1:5000/speechtotext", {
@@ -56,6 +78,7 @@ function chat(question) {
 
 let myvad;
 const recordingSymbol = document.getElementById("recording");
+let wakeworddetected = false;
 
 async function startVAD() {
     myvad = await vad.MicVAD.new({
@@ -68,20 +91,33 @@ async function startVAD() {
             const outputdiv = document.getElementById("outputdiv")
             const wavBuffer = vad.utils.encodeWAV(audio);
             const base64WavBuffer = vad.utils.arrayBufferToBase64(wavBuffer);
-            const transcription = await speechtotext(base64WavBuffer);
-            console.log("You:", transcription);
-            outputdiv.innerHTML += `You: ${transcription}</br>`
-            const response = await chat(transcription);
-            console.log("Bot:", response);
-            outputdiv.innerHTML += `Bot: ${response}</br>`
-            const audioFileObjectURL = await texttospeech(response);
-            const audioFile = new Audio(audioFileObjectURL);
-            const viz = new Visualizer(audioFile, 100, 5, 100, "#000000");
-            viz.play();
-            viz.addEventListener("ended", () => {
-                myvad.start();
-                recordingSymbol.innerText = "🔴";
-            });
+            if(wakeworddetected || !wakeworddetection) {
+                const transcription = await speechtotext(base64WavBuffer);
+                console.log("You:", transcription);
+                outputdiv.innerHTML += `You: ${transcription}</br>`
+                const response = await chat(transcription);
+                console.log("Bot:", response);
+                outputdiv.innerHTML += `Bot: ${response}</br>`
+                const audioFileObjectURL = await texttospeech(response);
+                const audioFile = new Audio(audioFileObjectURL);
+                const viz = new Visualizer(audioFile, 100, 5, 100, "#000000");
+                viz.play();
+                viz.addEventListener("ended", () => {
+                    wakeworddetected = false;
+                    myvad.start();
+                    recordingSymbol.innerText = "🔴";
+                });
+            }
+            if(!wakeworddetected && wakeworddetection) {
+                if(await wakeword(base64WavBuffer, customwakeword)) {
+                    console.log("Wakeword detected...");
+                    wakeworddetected = true;
+                    myvad.start();
+                } else {
+                    console.log("Wakeword not detected...");
+                    myvad.start();
+                }
+            }
         }
     });
     myvad.start();
