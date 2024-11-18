@@ -79,6 +79,8 @@ function chat(question) {
 let myvad;
 const recordingSymbol = document.getElementById("recording");
 let wakeworddetected = false;
+const audioElement = document.getElementById("audio");
+const viz = new Visualizer(audioElement, 100, 5, 100, "#ffffff");
 
 async function startVAD() {
     myvad = await vad.MicVAD.new({
@@ -99,8 +101,7 @@ async function startVAD() {
                 console.log("Bot:", response);
                 outputdiv.innerHTML += `Bot: ${response}</br>`
                 const audioFileObjectURL = await texttospeech(response);
-                const audioFile = new Audio(audioFileObjectURL);
-                const viz = new Visualizer(audioFile, 100, 5, 100, "#000000");
+                audioElement.src = audioFileObjectURL;
                 viz.play();
                 viz.addEventListener("ended", () => {
                     wakeworddetected = false;

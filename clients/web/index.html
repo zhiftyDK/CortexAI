@@ -8,8 +8,15 @@
     <script src="https://cdn.jsdelivr.net/npm/@ricky0123/vad-web@0.0.7/dist/bundle.min.js"></script>
     <script src="./audiovisualizer.js" defer></script>
     <script src="./script.js" defer></script>
+    <style>
+        body {
+            color: white;
+            background-color: black;
+        }
+    </style>
 </head>
 <body>
+    <audio id="audio"></audio>
     <div id="outputdiv" style="margin-bottom: 1rem;"></div>
     <button onclick="startVAD()">Start</button>
     <button onclick="pauseVAD()">Pause</button>
