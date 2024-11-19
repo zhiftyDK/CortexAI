@@ -103,7 +103,11 @@ async function startVAD() {
                 viz.addEventListener("ended", () => {
                     wakeworddetected = false;
                     myvad.start();
-                    recordingSymbol.innerText = "🟡";
+                    if(wakeworddetection) {
+                        recordingSymbol.innerText = "🟡";
+                    } else {
+                        recordingSymbol.innerText = "🔴";
+                    }
                 });
             }
             if(!wakeworddetected && wakeworddetection) {
@@ -123,4 +127,8 @@ async function startVAD() {
 }
 
 startVAD();
-recordingSymbol.innerText = "🟡";
+if(wakeworddetection) {
+    recordingSymbol.innerText = "🟡";
+} else {
+    recordingSymbol.innerText = "🔴";
+}
