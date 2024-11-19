@@ -76,14 +76,13 @@ function chat(question) {
     });
 }
 
-let myvad;
 const recordingSymbol = document.getElementById("recording");
 let wakeworddetected = false;
 const audioElement = document.getElementById("audio");
 const viz = new Visualizer(audioElement, 100, 5, 100, "#ffffff");
 
 async function startVAD() {
-    myvad = await vad.MicVAD.new({
+    const myvad = await vad.MicVAD.new({
         onSpeechStart: () => {
             console.log("Speech start detected")
         },

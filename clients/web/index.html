@@ -13,10 +13,35 @@
             color: white;
             background-color: black;
         }
+        .ring {
+            width: 200px;
+            height: 200px;
+            border: 2px solid white;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.4), 0 0 50px rgba(255, 255, 255, 0.7);
+            animation: pulseGlow 1.5s infinite; /* Slightly faster pulse */
+        }
+
+        @keyframes pulseGlow {
+            0% {
+                box-shadow: 0 0 20px rgba(255, 255, 255, 0.4), 0 0 40px rgba(255, 255, 255, 0.6);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(255, 255, 255, 0.6), 0 0 60px rgba(255, 255, 255, 0.8);
+            }
+            100% {
+                box-shadow: 0 0 20px rgba(255, 255, 255, 0.4), 0 0 40px rgba(255, 255, 255, 0.6);
+            }
+        }
     </style>
 </head>
 <body>
     <audio id="audio"></audio>
     <span id="recording">⚫</span>
+    <div class="ring"></div>
 </body>
 </html>
