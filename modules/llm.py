@@ -12,11 +12,13 @@ If system information is provided alongside a prompt, base your response on that
 
 conversation_history = []
 
+MODEL = "llama3.2"
+
 def ask_question_memory(question):
     try: 
         conversation_history.append({"role": "user", "content": question})
 
-        response = ollama.chat(model="llama3.1:8b-instruct-q4_0", messages=[
+        response = ollama.chat(model=MODEL, messages=[
             {"role": "system", "content": system_message},
             *conversation_history
         ])
@@ -41,7 +43,7 @@ def ask_question_google(question, num_search_results=1):
 
         conversation_history.append({"role": "user", "content": user_prompt})
 
-        response = ollama.chat(model="llama3.1:8b-instruct-q4_0", messages=[
+        response = ollama.chat(model=MODEL, messages=[
             {"role": "system", "content": system_message + google_system_message},
             {"role": "user", "content": user_prompt}
         ])
